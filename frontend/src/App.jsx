@@ -18,11 +18,10 @@ import Signup from "./pages/Signup";
 import AuthLayout from "./components/layout/AuthLayout";
 import PatientPortal from "./pages/patient/PatientPortal";
 import DoctorPortal from "./pages/doctor/DoctorPortal";
+import InsurancePortal from "./pages/insurance/InsurancePortal";
+import HospitalPortal from "./pages/hospital/HospitalPortal";
+import EmailVerification from './pages/EmailVerification';
 import "./index.css";
-
-function Protected({ children }) {
-  return localStorage.getItem('token') ? children : <Navigate to="/login" />;
-}
 
 // Create a MainLayout component for the landing page
 const MainLayout = () => (
@@ -77,8 +76,13 @@ const App = () => {
             />
 
             {/* Portal Routes */}
-            <Route path="/patient" element={<Protected><PatientPortal /></Protected>} />
-            <Route path="/doctor" element={<Protected><DoctorPortal /></Protected>} />
+            <Route path="/patient" element={<PatientPortal />} />
+            <Route path="/doctor" element={<DoctorPortal />} />
+            <Route path="/insurance" element={<InsurancePortal />} />
+            <Route path="/hospital" element={<HospitalPortal />} />
+
+            {/* Email Verification Route */}
+            <Route path="/verify-email" element={<EmailVerification />} />
 
             {/* Redirect unknown routes to home */}
             <Route path="*" element={<Navigate to="/" replace />} />
