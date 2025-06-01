@@ -19,6 +19,8 @@ import AuthLayout from "./components/layout/AuthLayout";
 import PatientPortal from "./pages/patient/PatientPortal";
 import DoctorPortal from "./pages/doctor/DoctorPortal";
 import EmailVerification from './pages/EmailVerification';
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import "./index.css";
 
 function Protected({ children }) {
@@ -83,6 +85,10 @@ const App = () => {
 
             {/* Email Verification Route */}
             <Route path="/verify-email" element={<EmailVerification />} />
+
+            {/* Forgot/Reset Password Routes */}
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
             {/* Redirect unknown routes to home */}
             <Route path="*" element={<Navigate to="/" replace />} />

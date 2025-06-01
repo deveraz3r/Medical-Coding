@@ -46,7 +46,15 @@ const userSchema = new mongoose.Schema({
     },
     emailVerificationExpires: {
         type: Date
-    }
+    },
+    passwordResetToken: {
+        type: String,
+        default: null
+    },
+    passwordResetExpires: {
+        type: Date,
+        default: null
+    },
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
