@@ -1,0 +1,90 @@
+.ant-menu-item {
+  background-color: #129990 !important;
+  color: #FFFBDE !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.ant-menu-item:hover {
+  background-color: #90D1CA !important;
+}
+
+.ant-menu-item-selected {
+  background-color: #FFFBDE !important;
+  color: #129990 !important;
+}
+
+.ant-menu {
+  background-color: #129990 !important;
+}
+
+.ant-menu-inline-collapsed {
+  width: 80px !important;
+}
+
+.ant-menu-inline-collapsed .ant-menu-item {
+  padding: 0 24px !important;
+}
+
+/* Form Styles */
+.ant-form-item-label > label {
+  color: #129990 !important;
+  font-weight: 500;
+}
+
+.ant-input, .ant-input-number, .ant-select-selector {
+  border-color: #90D1CA !important;
+}
+
+.ant-input:hover, .ant-input-number:hover, .ant-select-selector:hover {
+  border-color: #129990 !important;
+}
+
+.ant-input:focus, .ant-input-number:focus, .ant-select-selector:focus {
+  border-color: #129990 !important;
+  box-shadow: 0 0 0 2px rgba(18, 153, 144, 0.2) !important;
+}
+
+/* Button Styles */
+.ant-btn-primary {
+  background-color: #129990 !important;
+  border-color: #129990 !important;
+}
+
+.ant-btn-primary:hover {
+  background-color: #096B68 !important;
+  border-color: #096B68 !important;
+}
+
+/* Table Styles */
+.ant-table-thead > tr > th {
+  background-color: #129990 !important;
+  color: #FFFBDE !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background-color: rgba(144, 209, 202, 0.1) !important;
+}
+
+/* Card Styles */
+.ant-card {
+  border-color: #90D1CA !important;
+}
+
+.ant-card-head {
+  background-color: #129990 !important;
+  color: #FFFBDE !important;
+}
+
+/* Tabs Styles */
+.ant-tabs-tab {
+  color: #129990 !important;
+}
+
+.ant-tabs-tab-active {
+  color: #096B68 !important;
+}
+
+.ant-tabs-ink-bar {
+  background-color: #129990 !important;
+} 
