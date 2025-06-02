@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Form, Input, Select, Button, Card, Typography, message, DatePicker } from "antd";
+import React, { useEffect, useState } from "react";
+import { Form, Input, Select, Button, Card, Typography, message, DatePicker, Modal } from "antd";
 import { jwtDecode } from 'jwt-decode';
 import dayjs from 'dayjs';
 import api from '../../../services/api';
@@ -9,6 +9,7 @@ const { Option } = Select;
 
 const Profile = () => {
   const [form] = Form.useForm();
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   useEffect(() => { fetchUserProfile(); }, []);
 
@@ -67,6 +68,32 @@ const Profile = () => {
     } catch (error) {
       console.error('Error updating profile:', error);
       message.error('Error updating Profile');
+    }
+  };
+
+  const handleDeleteProfile = () => {
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDeleteProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        message.error('Please login again');
+        return;
+      }
+      const decodedToken = jwtDecode(token);
+      const userID = decodedToken.id;
+
+      await api.delete(`/users/${userID}`);
+      message.success('Profile deleted successfully');
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    } catch (error) {
+      message.error('Failed to delete profile');
+      console.error('Delete error:', error);
+    } finally {
+      setDeleteModalOpen(false);
     }
   };
 
@@ -183,6 +210,27 @@ const Profile = () => {
             </Button>
           </Form.Item>
         </Form>
+        <div className="text-center mt-4">
+          <Button
+            type="default"
+            danger
+            onClick={handleDeleteProfile}
+            size="large"
+          >
+            Delete Profile
+          </Button>
+        </div>
+        <Modal
+          open={deleteModalOpen}
+          title="Delete Profile"
+          onOk={confirmDeleteProfile}
+          onCancel={() => setDeleteModalOpen(false)}
+          okText="Yes, Delete"
+          cancelText="Cancel"
+          okButtonProps={{ danger: true }}
+        >
+          Are you sure you want to delete your profile? This action cannot be undone.
+        </Modal>
       </Card>
     </div>
   );

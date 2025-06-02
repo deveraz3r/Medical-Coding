@@ -1,11 +1,13 @@
-import React, { useEffect } from "react";
-import { Form, Input, Button, Card, InputNumber, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { Form, Input, Button, Card, InputNumber, message, Modal } from "antd";
 import { jwtDecode } from 'jwt-decode';
 import dayjs from 'dayjs';
 import api from '../../../services/api';
 
 const Profile = () => {
   const [form] = Form.useForm();
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [doctorId, setDoctorId] = useState(null);
 
   useEffect(() => { fetchUserProfile(); }, []);
 
@@ -31,9 +33,10 @@ const Profile = () => {
         const doctorResponse = await api.get('/doctors');
         if (doctorResponse.data && doctorResponse.data.length > 0) {
           doctorData = doctorResponse.data[0];
+          setDoctorId(doctorData._id); // Save doctorId for delete
         }
       } catch (err) {
-        console.console.error('Error fetching doctor profile:', err);
+        console.error('Error fetching doctor profile:', err);
         message.error('Error fetching doctor profile data');
       }
       
@@ -110,6 +113,38 @@ const Profile = () => {
     } catch (err) {
       console.error('Error updating profile:', err);
       message.error('Error updating Profile');
+    }
+  };
+
+  const handleDeleteProfile = () => {
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDeleteProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        message.error('Please login again');
+        return;
+      }
+      const decodedToken = jwtDecode(token);
+      const userID = decodedToken.id;
+
+      // Delete doctor profile
+      if (doctorId) {
+        await api.delete(`/doctors/${doctorId}`);
+      }
+      // Delete user profile
+      await api.delete(`/users/${userID}`);
+
+      message.success('Profile deleted successfully');
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    } catch (error) {
+      message.error('Failed to delete profile');
+      console.error('Delete error:', error);
+    } finally {
+      setDeleteModalOpen(false);
     }
   };
 
@@ -219,8 +254,28 @@ const Profile = () => {
           <Button type="primary" htmlType="submit" className="w-full md:w-auto">
             Save Changes
           </Button>
+          <Button
+            danger
+            type="default"
+            className="w-full md:w-auto ml-2"
+            onClick={handleDeleteProfile}
+          >
+            Delete Profile
+          </Button>
         </Form.Item>
       </Form>
+
+      <Modal
+        open={deleteModalOpen}
+        title="Delete Profile"
+        onOk={confirmDeleteProfile}
+        onCancel={() => setDeleteModalOpen(false)}
+        okText="Yes, Delete"
+        cancelText="Cancel"
+        okButtonProps={{ danger: true }}
+      >
+        Are you sure you want to delete your profile? This action cannot be undone.
+      </Modal>
     </Card>
   );
 };
