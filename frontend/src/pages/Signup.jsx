@@ -38,7 +38,7 @@ const Signup = () => {
     }
   };
 
-  const roles = ["Patient", "Doctor", "Front Desk", "Admin", "Insurance"];
+  const roles = ["Patient", "Doctor",/* "Front Desk", "Admin", "Insurance" */];
   const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
   return (

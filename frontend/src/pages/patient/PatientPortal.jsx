@@ -8,6 +8,7 @@ import {
   FileTextOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import Profile from "./sections/Profile";
 import BookAppointment from "./sections/BookAppointment";
@@ -22,6 +23,11 @@ const PatientPortal = () => {
   const [selectedKey, setSelectedKey] = useState("profile");
   const [collapsed, setCollapsed] = useState(false);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location = "/";
+  };
+
   const menuItems = [
     { key: "profile", icon: <UserOutlined />, label: "Profile" },
     {
@@ -32,6 +38,13 @@ const PatientPortal = () => {
     { key: "history", icon: <HistoryOutlined />, label: "History" },
     { key: "sharing", icon: <ShareAltOutlined />, label: "Data Sharing" },
     { key: "ehr", icon: <FileTextOutlined />, label: "EHR" },
+    {
+      key: "logout",
+      icon: <LogoutOutlined />,
+      label: "Logout",
+      className: "mt-auto",
+      onClick: handleLogout,
+    },
   ];
 
   const renderContent = () => {
@@ -86,9 +99,15 @@ const PatientPortal = () => {
         <Menu
           mode="inline"
           selectedKeys={[selectedKey]}
-          onClick={({ key }) => setSelectedKey(key)}
+          onClick={({ key }) => {
+            if (key === "logout") {
+              handleLogout();
+            } else {
+              setSelectedKey(key);
+            }
+          }}
           items={menuItems}
-          className="border-r-0"
+          className="border-r-0 flex flex-col h-[calc(100vh-80px)]"
         />
       </Sider>
       <Layout
