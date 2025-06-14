@@ -35,10 +35,10 @@ const Footer = () => {
             {/* Company Info */}
             <Col xs={24} sm={24} md={8} lg={8}>
               <div className="mb-8 md:mb-0">
-                <Title level={3} className="text-white mb-4">
+                <Title level={3} className="text-white mb-4" style={{ color: 'white' }}>
                   HealthCare
                 </Title>
-                <Text className="text-gray-400 block mb-6">
+                <Text className="text-gray-400 block mb-6" style={{ color: 'white' }}>
                   Revolutionizing healthcare with blockchain and AI technology.
                 </Text>
                 <Space size="large" className="text-2xl">
@@ -46,7 +46,7 @@ const Footer = () => {
                     <Link
                       key={index}
                       href={social.url}
-                      className="text-gray-400 hover:text-teal-500 transition-colors"
+                      className="text-gray-400 hover:text-teal-500 transition-colors" style={{ color: 'white' }}
                     >
                       {social.icon}
                     </Link>
@@ -59,7 +59,7 @@ const Footer = () => {
             {Object.entries(footerLinks).map(([category, links]) => (
               <Col xs={12} sm={12} md={4} lg={4} key={category}>
                 <div>
-                  <Title level={4} className="text-white mb-4">
+                  <Title level={4} className="text-white mb-4" style={{ color: 'white' }}>
                     {category}
                   </Title>
                   <ul className="space-y-2">
@@ -67,7 +67,7 @@ const Footer = () => {
                       <li key={index}>
                         <Link
                           href="#"
-                          className="text-gray-400 hover:text-teal-500"
+                          className="text-gray-400 hover:text-teal-500" style={{ color: 'white' }}
                         >
                           {link}
                         </Link>
@@ -84,16 +84,16 @@ const Footer = () => {
         <div className="border-t border-gray-800 pt-8 mt-8">
           <Row justify="space-between" align="middle">
             <Col>
-              <Text className="text-gray-400">
+              <Text className="text-gray-400" style={{ color: 'white' }}>
                 © {currentYear} HealthCare. All rights reserved.
               </Text>
             </Col>
             <Col>
               <Space size="large" className="text-gray-400">
-                <Link href="#" className="text-gray-400 hover:text-teal-500">
+                <Link href="#" className="text-gray-400 hover:text-teal-500" style={{ color: 'white' }}>
                   Privacy Policy
                 </Link>
-                <Link href="#" className="text-gray-400 hover:text-teal-500">
+                <Link href="#" className="text-gray-400 hover:text-teal-500" style={{ color: 'white' }}>
                   Terms of Service
                 </Link>
               </Space>

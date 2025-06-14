@@ -15,14 +15,14 @@ const HeroSection = () => {
       {/* Content */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16">
         <div className="text-center">
-          <Title className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[#FFFBDE] mb-8">
+          <Title className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[#FFFBDE] mb-8" style={{ color: 'white' }}>
             Revolutionizing Healthcare
-            <span className="block mt-4">
+            <span className="block mt-4" style={{ color: 'white' }}>
               Secure Blockchain EHR with AI-Powered Coding
             </span>
           </Title>
 
-          <Paragraph className="text-2xl text-[#90D1CA] mb-12 max-w-3xl mx-auto">
+          <Paragraph className="text-2xl text-[#90D1CA] mb-12 max-w-3xl mx-auto" style={{ color: 'white' }}>
             Transform your healthcare experience with our cutting-edge
             blockchain technology and AI-powered solutions.
           </Paragraph>
