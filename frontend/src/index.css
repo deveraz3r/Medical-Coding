@@ -17,7 +17,7 @@ html {
   scroll-padding-top: 64px; /* Height of the fixed navbar */
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -33,7 +33,7 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-dark-teal);
-}
+} */
 
 /* Active section highlight */
 .section-active {

@@ -81,7 +81,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-800 pt-8 mt-8">
+        <div className="border-t border-white-800 pt-8 mt-8">
           <Row justify="space-between" align="middle">
             <Col>
               <Text className="text-gray-400" style={{ color: 'white' }}>
