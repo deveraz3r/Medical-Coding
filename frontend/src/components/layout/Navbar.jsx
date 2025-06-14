@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "antd";
 import { Link, useLocation } from "react-router-dom";
+import logo from "../../assets/medbloc-logo.png";
 
 const Navbar = () => {
   const [activeSection, setActiveSection] = useState("hero");
@@ -59,9 +60,15 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/">
-              <h1 className="text-2xl font-bold text-[#129990] cursor-pointer">
-                MedBloc
-              </h1>
+              <img
+                src={logo}
+                alt="MedBloc Logo"
+                style={{
+                  height: "60px",
+                  width: "auto",
+                  marginLeft: "10px",
+                }}
+              />
             </Link>
           </div>
 
