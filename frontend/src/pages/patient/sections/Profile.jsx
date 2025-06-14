@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Select, Button, Card, Typography, message, DatePicker, Modal } from "antd";
-import { jwtDecode } from 'jwt-decode';
-import dayjs from 'dayjs';
-import api from '../../../services/api';
+import {
+  Form,
+  Input,
+  Select,
+  Button,
+  Card,
+  Typography,
+  message,
+  DatePicker,
+  Modal,
+} from "antd";
+import { jwtDecode } from "jwt-decode";
+import dayjs from "dayjs";
+import api from "../../../services/api";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -11,25 +21,27 @@ const Profile = () => {
   const [form] = Form.useForm();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  useEffect(() => { fetchUserProfile(); }, []);
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
 
   const fetchUserProfile = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        console.error('No token found. Please login again.');
+        console.error("No token found. Please login again.");
         return;
       }
       const decodedToken = jwtDecode(token);
       const userID = decodedToken.id;
       if (!userID) {
-        console.error('User id not found. Please login again.');
+        console.error("User id not found. Please login again.");
         return;
       }
-      
+
       const response = await api.get(`/users/${userID}`);
       const user = response.data;
-      
+
       form.setFieldsValue({
         firstName: user.firstName,
         lastName: user.lastName,
@@ -37,37 +49,39 @@ const Profile = () => {
         phone: user.phone,
         gender: user.gender,
         bloodGroup: user.bloodGroup,
-        dateOfBirth: user.dateOfBirth ? dayjs(user.dateOfBirth) : null
+        dateOfBirth: user.dateOfBirth ? dayjs(user.dateOfBirth) : null,
       });
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error("Error fetching profile:", error);
     }
   };
 
   const handleSubmit = async (values) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        console.error('No token found. Please login again.');
+        console.error("No token found. Please login again.");
         return;
       }
       const decodedToken = jwtDecode(token);
       const userID = decodedToken.id;
       if (!userID) {
-        console.error('User id not found. Please login again.');
+        console.error("User id not found. Please login again.");
         return;
       }
-      
+
       const formattedValues = {
         ...values,
-        dateOfBirth: values.dateOfBirth ? values.dateOfBirth.format('YYYY-MM-DD') : null
+        dateOfBirth: values.dateOfBirth
+          ? values.dateOfBirth.format("YYYY-MM-DD")
+          : null,
       };
-      
+
       await api.put(`/users/${userID}`, formattedValues);
-      message.success('Profile Updated Successfully');
+      message.success("Profile Updated Successfully");
     } catch (error) {
-      console.error('Error updating profile:', error);
-      message.error('Error updating Profile');
+      console.error("Error updating profile:", error);
+      message.error("Error updating Profile");
     }
   };
 
@@ -77,24 +91,29 @@ const Profile = () => {
 
   const confirmDeleteProfile = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        message.error('Please login again');
+        message.error("Please login again");
         return;
       }
       const decodedToken = jwtDecode(token);
       const userID = decodedToken.id;
 
       await api.delete(`/users/${userID}`);
-      message.success('Profile deleted successfully');
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      message.success("Profile deleted successfully");
+      localStorage.removeItem("token");
+      window.location.href = "/login";
     } catch (error) {
-      message.error('Failed to delete profile');
-      console.error('Delete error:', error);
+      message.error("Failed to delete profile");
+      console.error("Delete error:", error);
     } finally {
       setDeleteModalOpen(false);
     }
+  };
+
+  const disabledDate = (current) => {
+    // Can not select days after today
+    return current && current > dayjs().endOf("day");
   };
 
   return (
@@ -103,11 +122,7 @@ const Profile = () => {
         <Title level={2} className="text-[#129990] mb-6">
           Profile Information
         </Title>
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-        >
+        <Form form={form} layout="vertical" onFinish={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Form.Item
               name="firstName"
@@ -181,22 +196,23 @@ const Profile = () => {
             </Form.Item>
 
             <Form.Item
-                name="dateOfBirth"
-                label="Date of Birth"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please select your date of birth!",
-                  },
-                ]}
-              >
-                <DatePicker
-                  placeholder="Date of Birth"
-                  size="large"
-                  style={{ width: "100%" }}
-                  format="YYYY-MM-DD"
-                />
-              </Form.Item>
+              name="dateOfBirth"
+              label="Date of Birth"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select your date of birth!",
+                },
+              ]}
+            >
+              <DatePicker
+                placeholder="Date of Birth"
+                size="large"
+                style={{ width: "100%" }}
+                format="YYYY-MM-DD"
+                disabledDate={disabledDate}
+              />
+            </Form.Item>
           </div>
 
           <Form.Item className="mt-6">
@@ -229,7 +245,8 @@ const Profile = () => {
           cancelText="Cancel"
           okButtonProps={{ danger: true }}
         >
-          Are you sure you want to delete your profile? This action cannot be undone.
+          Are you sure you want to delete your profile? This action cannot be
+          undone.
         </Modal>
       </Card>
     </div>

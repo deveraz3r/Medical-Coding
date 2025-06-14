@@ -23,13 +23,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = [
-        "hero",
-        "features",
-        "testimonials",
-        "why-us",
-        "contact",
-      ];
+      const sections = ["hero", "features", "testimonials", "why-us"];
       const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
@@ -53,7 +47,6 @@ const Navbar = () => {
     { id: "features", label: "Features" },
     { id: "testimonials", label: "Testimonials" },
     { id: "why-us", label: "Why Us" },
-    { id: "contact", label: "Contact" },
   ];
 
   // Only show navigation items on the home page
@@ -67,7 +60,7 @@ const Navbar = () => {
           <div className="flex-shrink-0">
             <Link to="/">
               <h1 className="text-2xl font-bold text-[#129990] cursor-pointer">
-                HealthCare
+                MedBloc
               </h1>
             </Link>
           </div>

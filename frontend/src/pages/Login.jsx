@@ -1,20 +1,9 @@
-import React, { useState } from "react";
-import {
-  Card,
-  Form,
-  Input,
-  Select,
-  Button,
-  Spin,
-  Typography,
-  Space,
-  Divider,
-  message,
-  Alert
-} from "antd";
+import React, { useState, useEffect } from "react";
+import { Form, Input, Select, Button, Typography, Space } from "antd";
 import { GoogleOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import api from '../services/api';
+import api from "../services/api";
+import doctor3 from "../assets/doctor_3.jpg";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -22,173 +11,168 @@ const { Option } = Select;
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  const [error, setError] = useState('');
-  const [showResendVerification, setShowResendVerification] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
+  const [error, setError] = useState("");
+  const [imagePath, setImagePath] = useState(""); // State for image path
 
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      const res = await api.post('/auth/login', values);
-      localStorage.setItem('token', res.data.token);
+      const res = await api.post("/auth/login", values);
+      localStorage.setItem("token", res.data.token);
       setLoading(false);
       window.location = `/${values.role}`;
-    } catch(err) {
-      const errorData = err.response?.data;
-            
-            if (errorData?.requiresVerification) {
-              setShowResendVerification(true);
-              setUserEmail(values.email);
-              message.error(errorData.message);
-            } else {
-              message.error(errorData?.message || 'Login failed');
-            }
-            setError(errorData?.message || 'An error occurred during login');
-            setLoading(false);
-    }
-  };
-
-  const handleResendVerification = async () => {
-    try {
-      await api.post('/auth/resend-verification', { email: userEmail });
-      message.success('Verification email sent! Please check your inbox.');
-      setShowResendVerification(false);
     } catch (err) {
-      console.error('Error sending verification email:', err);
-      message.error('Failed to send verification email');
+      console.error(err);
+      setError(err.response?.data?.message || "Login Failed");
+      setLoading(false);
     }
   };
 
-  const roles = ["Patient", "Doctor", /* "Front Desk", "Admin", "Insurance" */];
+  const setLoginImage = () => {
+    setImagePath(doctor3); // Use the imported image directly
+  };
+
+  useEffect(() => {
+    setLoginImage();
+  }, []);
+
+  const roles = ["Patient", "Doctor", "Front Desk", "Admin", "Insurance"];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FFFBDE] p-4">
-      <Spin spinning={loading}>
-        <Card
-          className="w-full max-w-md"
-          style={{
-            boxShadow: "0 8px 32px rgba(18, 153, 144, 0.5)",
-            border: "1px solid rgba(144, 209, 202, 0.4)",
-            background: "white",
-          }}
-        >
-          <div className="text-center mb-8">
-            <Title level={2} style={{ color: "#129990" }}>
-              Welcome Back
-            </Title>
-            <Text type="secondary">Please sign in to continue</Text>
+    <div className="h-screen flex">
+      {/* Middle Section - Image */}
+      <div className="w-3/5 bg-gray-100">
+        {!imagePath && (
+          <div className="flex items-center justify-center h-full">
+            <span className="text-gray-500">Image Placeholder</span>
           </div>
+        )}
+        {imagePath && (
+          <div
+            className="w-13/10 h-14/9 bg-cover bg-center"
+            style={{ backgroundImage: `url(${imagePath})` }}
+          />
+        )}
+      </div>
 
-          {showResendVerification && (
-            <Alert
-              message="Email Verification Required"
-              description={
-                <div>
-                  <p>Please verify your email before logging in.</p>
-                  <Button 
-                    type="link" 
-                    onClick={handleResendVerification}
-                    className="p-0"
-                  >
-                    Resend verification email
-                  </Button>
-                </div>
-              }
-              type="warning"
-              className="mb-4"
-            />
+      {/* Right Section - Login Form */}
+      <div className="w-2/5 bg-[#FFFBDE] p-8 flex flex-col">
+        <div className="mb-12">
+          <Title level={1} style={{ color: "#129990", marginBottom: 0 }}>
+            Welcome
+          </Title>
+          <Title level={1} style={{ color: "#129990", margin: 0 }}>
+            Back
+          </Title>
+          <Text className="text-white">Please sign in to continue</Text>
+        </div>
+
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          requiredMark={false}
+          className="w-full max-w-md"
+        >
+          {error && (
+            <div
+              style={{
+                color: "red",
+                marginBottom: "1rem",
+                textAlign: "center",
+              }}
+            >
+              {error}
+            </div>
           )}
-
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={handleSubmit}
-            requiredMark={false}
+          <Form.Item
+            name="email"
+            rules={[
+              { required: true, message: "Please input your email!" },
+              { type: "email", message: "Please enter a valid email!" },
+            ]}
           >
-            {error && <div style={{ color: 'red', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
-            <Form.Item
-              name="email"
-              rules={[
-                { required: true, message: "Please input your email!" },
-                { type: "email", message: "Please enter a valid email!" },
-              ]}
+            <Input
+              prefix={<UserOutlined />}
+              placeholder="Email"
+              size="large"
+              className="rounded-lg"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Password"
+              size="large"
+              className="rounded-lg"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="role"
+            rules={[{ required: true, message: "Please select your role!" }]}
+          >
+            <Select
+              placeholder="Select Role"
+              size="large"
+              className="rounded-lg"
             >
-              <Input
-                prefix={<UserOutlined />}
-                placeholder="Email"
-                size="large"
-              />
-            </Form.Item>
+              {roles.map((role) => (
+                <Option key={role} value={role.toLowerCase()}>
+                  {role}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-            <Form.Item
-              name="password"
-              rules={[
-                { required: true, message: "Please input your password!" },
-              ]}
-            >
-              <Input.Password
-                prefix={<LockOutlined />}
-                placeholder="Password"
-                size="large"
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="role"
-              rules={[{ required: true, message: "Please select your role!" }]}
-            >
-              <Select placeholder="Select Role" size="large">
-                {roles.map((role) => (
-                  <Option key={role} value={role.toLowerCase()}>
-                    {role}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                block
-                size="large"
-                style={{
-                  background: "#129990",
-                  height: "48px",
-                }}
-              >
-                Sign In
-              </Button>
-            </Form.Item>
-
-            <Divider>Or</Divider>
-
+          <Form.Item>
             <Button
-              icon={<GoogleOutlined />}
+              type="primary"
+              htmlType="submit"
               block
               size="large"
-              className="mb-4"
-              style={{ height: "48px" }}
+              className="rounded-lg"
+              style={{
+                background: "#129990",
+                height: "48px",
+              }}
             >
-              Continue with Google
+              Sign In
             </Button>
+          </Form.Item>
 
-            <div className="text-center mt-4">
-              <Space direction="vertical" size="small">
-                <Link to="/forgot-password" style={{ color: "#129990" }}>
-                  Forgot Password?
+          <div className="text-center">
+            <Text>Or</Text>
+          </div>
+
+          <Button
+            icon={<GoogleOutlined />}
+            block
+            size="large"
+            className="mt-4 rounded-lg"
+          >
+            Continue with Google
+          </Button>
+
+          <div className="text-center mt-8">
+            <Space direction="vertical" size="small">
+              <Link to="/forgot-password" style={{ color: "#129990" }}>
+                Forgot Password?
+              </Link>
+              <Text type="secondary">
+                Don't have an account?{" "}
+                <Link to="/signup" style={{ color: "#129990" }}>
+                  Sign Up
                 </Link>
-                <Text type="secondary">
-                  Don't have an account?{" "}
-                  <Link to="/signup" style={{ color: "#129990" }}>
-                    Sign Up
-                  </Link>
-                </Text>
-              </Space>
-            </div>
-          </Form>
-        </Card>
-      </Spin>
+              </Text>
+            </Space>
+          </div>
+        </Form>
+      </div>
     </div>
   );
 };

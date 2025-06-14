@@ -13,7 +13,8 @@ import {
 } from "antd";
 import { GoogleOutlined, UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import api from '../services/api';
+import api from "../services/api";
+import dayjs from "dayjs";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -21,24 +22,33 @@ const { Option } = Select;
 const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleSubmit = async (values) => {
     const { confirmPassword, ...signupData } = values;
-    const formattedValues = { ...signupData, dateOfBirth: values.dateOfBirth ? values.dateOfBirth.format('YYYY-MM-DD') : null };
+    const formattedValues = {
+      ...signupData,
+      dateOfBirth: values.dateOfBirth
+        ? values.dateOfBirth.format("YYYY-MM-DD")
+        : null,
+    };
     setLoading(true);
     try {
-      await api.post('/auth/signup', formattedValues);
+      await api.post("/auth/signup", formattedValues);
       setLoading(false);
-      window.location = '/login';
+      window.location = "/login";
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || 'Signup Failed');
+      setError(err.response?.data?.message || "Signup Failed");
       setLoading(false);
     }
   };
+  const disabledDate = (current) => {
+    // Can not select days after today
+    return current && current > dayjs().endOf("day");
+  };
 
-  const roles = ["Patient", "Doctor",/* "Front Desk", "Admin", "Insurance" */];
+  const roles = ["Patient", "Doctor" /* "Front Desk", "Admin", "Insurance" */];
   const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
   return (
@@ -65,7 +75,17 @@ const Signup = () => {
             onFinish={handleSubmit}
             requiredMark={false}
           >
-            {error && <div style={{ color: 'red', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
+            {error && (
+              <div
+                style={{
+                  color: "red",
+                  marginBottom: "1rem",
+                  textAlign: "center",
+                }}
+              >
+                {error}
+              </div>
+            )}
             <div
               style={{
                 display: "grid",
@@ -181,6 +201,7 @@ const Signup = () => {
                   size="large"
                   style={{ width: "100%" }}
                   format="YYYY-MM-DD"
+                  disabledDate={disabledDate}
                 />
               </Form.Item>
             </div>
