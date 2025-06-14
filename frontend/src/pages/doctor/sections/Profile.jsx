@@ -7,6 +7,7 @@ import api from '../../../services/api';
 const Profile = () => {
   const [form] = Form.useForm();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [doctorId, setDoctorId] = useState(null);
 
   useEffect(() => { fetchUserProfile(); }, []);
@@ -109,7 +110,7 @@ const Profile = () => {
         console.error('Error updating doctor profile:', err);
       }
       
-      message.success('Profile Updated Successfully');
+      setSaveModalOpen(true);
     } catch (err) {
       console.error('Error updating profile:', err);
       message.error('Error updating Profile');
@@ -264,6 +265,18 @@ const Profile = () => {
           </Button>
         </Form.Item>
       </Form>
+
+      {/* Save Changes Success Modal */}
+      <Modal
+        open={saveModalOpen}
+        title="Changes Saved Successfully"
+        onOk={() => setSaveModalOpen(false)}
+        onCancel={() => setSaveModalOpen(false)}
+        okText="OK"
+        cancelButtonProps={{ style: { display: 'none' } }}
+      >
+        Your profile has been updated successfully!
+      </Modal>
 
       <Modal
         open={deleteModalOpen}

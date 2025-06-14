@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Select, Button, Typography, Space } from "antd";
+import { Form, Input, Select, Button, Typography, Space, message, Alert } from "antd";
 import { GoogleOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import api from "../services/api";
@@ -12,19 +12,40 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const [error, setError] = useState("");
+  const [showResendVerification, setShowResendVerification] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
   const [imagePath, setImagePath] = useState(""); // State for image path
 
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      const res = await api.post("/auth/login", values);
-      localStorage.setItem("token", res.data.token);
+      const res = await api.post('/auth/login', values);
+      localStorage.setItem('token', res.data.token);
       setLoading(false);
       window.location = `/${values.role}`;
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || "Login Failed");
+      const errorData = err.response?.data;
+      
+      if (errorData?.requiresVerification) {
+        setShowResendVerification(true);
+        setUserEmail(values.email);
+        message.error(errorData.message);
+      } else {
+        message.error(errorData?.message || 'Login failed');
+      }
+      setError(errorData?.message || 'An error occurred during login');
       setLoading(false);
+    }
+  };
+
+   const handleResendVerification = async () => {
+    try {
+      await api.post('/auth/resend-verification', { email: userEmail });
+      message.success('Verification email sent! Please check your inbox.');
+      setShowResendVerification(false);
+    } catch (err) {
+      console.error('Error sending verification email:', err);
+      message.error('Failed to send verification email');
     }
   };
 
@@ -36,7 +57,7 @@ const Login = () => {
     setLoginImage();
   }, []);
 
-  const roles = ["Patient", "Doctor", "Front Desk", "Admin", "Insurance"];
+  const roles = ["Patient", "Doctor"];
 
   return (
     <div className="h-screen flex">
@@ -66,6 +87,26 @@ const Login = () => {
           </Title>
           <Text className="text-white">Please sign in to continue</Text>
         </div>
+
+        {showResendVerification && (
+          <Alert
+            message="Email Verification Required"
+            description={
+              <div>
+                <p>Please verify your email before logging in.</p>
+                <Button 
+                  type="link" 
+                  onClick={handleResendVerification}
+                  className="p-0"
+                >
+                  Resend verification email
+                </Button>
+              </div>
+            }
+            type="warning"
+            className="mb-4"
+          />
+        )}
 
         <Form
           form={form}

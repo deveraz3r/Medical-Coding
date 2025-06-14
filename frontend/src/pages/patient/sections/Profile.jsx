@@ -20,6 +20,7 @@ const { Option } = Select;
 const Profile = () => {
   const [form] = Form.useForm();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [saveModalOpen, setSaveModalOpen] = useState(false);
 
   useEffect(() => {
     fetchUserProfile();
@@ -78,7 +79,7 @@ const Profile = () => {
       };
 
       await api.put(`/users/${userID}`, formattedValues);
-      message.success("Profile Updated Successfully");
+      setSaveModalOpen(true);
     } catch (error) {
       console.error("Error updating profile:", error);
       message.error("Error updating Profile");
@@ -224,10 +225,7 @@ const Profile = () => {
             >
               Save Changes
             </Button>
-          </Form.Item>
-        </Form>
-        <div className="text-center mt-4">
-          <Button
+            <Button
             type="default"
             danger
             onClick={handleDeleteProfile}
@@ -235,7 +233,23 @@ const Profile = () => {
           >
             Delete Profile
           </Button>
-        </div>
+          </Form.Item>
+        </Form>
+        
+        {/* Save Changes Success Modal */}
+        <Modal
+          open={saveModalOpen}
+          title="Changes Saved Successfully"
+          onOk={() => setSaveModalOpen(false)}
+          onCancel={() => setSaveModalOpen(false)}
+          okText="OK"
+          cancelButtonProps={{ style: { display: 'none' } }}
+          okButtonProps={{ style: { background: "#129990", borderColor: "#129990" } }}
+        >
+          Your profile has been updated successfully!
+        </Modal>
+
+        {/* Delete Profile Modal */}
         <Modal
           open={deleteModalOpen}
           title="Delete Profile"
